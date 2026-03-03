@@ -41,7 +41,7 @@
     "clean": "rm -rf dist .turbo tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "pino": "^9.6.0",
+    "pino": "^10.3.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {
