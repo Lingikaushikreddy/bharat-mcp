@@ -17,7 +17,10 @@ export default tseslint.config(
       ecmaVersion: 2022,
       sourceType: 'module',
       parserOptions: {
-        projectService: true,
+        projectService: {
+          // Test files are excluded from each package's build tsconfig.
+          allowDefaultProject: ['packages/*/src/__tests__/*.test.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },

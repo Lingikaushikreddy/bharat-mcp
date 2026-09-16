@@ -87,17 +87,15 @@ export function createLogger(
     },
   };
 
-  return pino(pinoOptions);
+  // MCP stdio servers use stdout for protocol messages, so logs must go to stderr.
+  return pino(pinoOptions, pino.destination(2));
 }
 
 // ---------------------------------------------------------------------------
 // Factory: createChildLogger
 // ---------------------------------------------------------------------------
 
-export function createChildLogger(
-  parent: Logger,
-  context: Record<string, unknown>,
-): Logger {
+export function createChildLogger(parent: Logger, context: Record<string, unknown>): Logger {
   return parent.child(context);
 }
 

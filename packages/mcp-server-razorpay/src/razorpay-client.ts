@@ -20,9 +20,11 @@ import {
 // Types
 // ---------------------------------------------------------------------------
 
-export interface RazorpayConfig extends ApiClientConfig {
+export interface RazorpayConfig extends Omit<ApiClientConfig, 'baseUrl'> {
   keyId: string;
   keySecret: string;
+  /** Defaults to the public Razorpay API. */
+  baseUrl?: string;
 }
 
 export interface RazorpayRequestOptions {
@@ -52,11 +54,11 @@ export class RazorpayClient {
 
   constructor(config: RazorpayConfig) {
     this.config = {
+      ...config,
       baseUrl: config.baseUrl ?? RAZORPAY_API_BASE,
       timeoutMs: config.timeoutMs ?? 30_000,
       maxRetries: config.maxRetries ?? 3,
       retryBaseDelayMs: config.retryBaseDelayMs ?? 1_000,
-      ...config,
     };
 
     // Razorpay uses HTTP Basic Auth: base64(key_id:key_secret)
@@ -153,11 +155,7 @@ export class RazorpayClient {
     return this.request<T>({ method: 'GET', path, query });
   }
 
-  async post<T>(
-    path: string,
-    body: Record<string, unknown>,
-    idempotencyKey?: string,
-  ): Promise<T> {
+  async post<T>(path: string, body: Record<string, unknown>, idempotencyKey?: string): Promise<T> {
     return this.request<T>({ method: 'POST', path, body, idempotencyKey });
   }
 
@@ -175,10 +173,7 @@ export class RazorpayClient {
     return url.toString();
   }
 
-  private async fetchWithTimeout(
-    url: string,
-    init: RequestInit,
-  ): Promise<Response> {
+  private async fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs);
 
