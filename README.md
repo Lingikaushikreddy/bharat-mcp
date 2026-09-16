@@ -8,11 +8,11 @@ Model Context Protocol (MCP) servers for Indian fintech and govtech APIs, so an 
 
 ## What's here
 
-| Package | What it contains | Status |
-|---|---|---|
-| [`@bharat-mcp/shared`](packages/shared) | Common types, Zod schemas and a tool-wrapper for input validation, an error hierarchy, and a structured logger | Implemented |
-| [`@bharat-mcp/mcp-server-razorpay`](packages/mcp-server-razorpay) | `RazorpayClient`: authenticated calls to the Razorpay REST API with request timeouts and retry backoff | Client implemented; MCP tools not yet wired up |
-| [`@bharat-mcp/mcp-server-gstn`](packages/mcp-server-gstn) | Server entry point for GST Network tools | Scaffold |
+| Package                                                           | What it contains                                                                                               | Status                                         |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [`@bharat-mcp/shared`](packages/shared)                           | Common types, Zod schemas and a tool-wrapper for input validation, an error hierarchy, and a structured logger | Implemented                                    |
+| [`@bharat-mcp/mcp-server-razorpay`](packages/mcp-server-razorpay) | `RazorpayClient`: authenticated calls to the Razorpay REST API with request timeouts and retry backoff         | Client implemented; MCP tools not yet wired up |
+| [`@bharat-mcp/mcp-server-gstn`](packages/mcp-server-gstn)         | Server entry point for GST Network tools                                                                       | Scaffold                                       |
 
 ## Getting started
 

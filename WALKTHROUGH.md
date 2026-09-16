@@ -39,23 +39,23 @@ graph TB
 
 ### Every validator at a glance:
 
-| Schema | Validates | Example Valid Value | What It Catches |
-|:-------|:----------|:-------------------|:----------------|
-| `GstinSchema` | GST Identification Number | `"27AAPFU0939F1ZV"` | Wrong length, invalid state code, bad format |
-| `UpiVpaSchema` | UPI Payment Address | `"john.doe@okicici"` | Missing `@`, invalid characters |
-| `PanSchema` | PAN Card Number | `"ABCPD1234E"` | Wrong entity type letter, bad length |
-| `AadhaarSchema` | Aadhaar number (⚠️ PII) | `"234567890123"` | Starts with 0/1, wrong digit count |
-| `AmountInPaiseSchema` | Money amount (in paise) | `50000` (= ₹500) | Negative values, decimals, exceeds ₹1Cr |
-| `CurrencySchema` | Currency code | `"INR"` | Anything other than INR |
-| `IdempotencyKeySchema` | UUIDv4 for dedup | `"550e8400-e29b-..."` | Non-UUID strings |
-| `PaginationSchema` | Page controls | `{ skip: 0, count: 10 }` | Negative skip, count > 100 |
-| `PhoneNumberSchema` | Indian mobile number | `"+919876543210"` | Missing +91, wrong digit count |
-| `IfscCodeSchema` | Bank branch code | `"SBIN0001234"` | Wrong length, missing 5th-position zero |
-| `FinancialYearSchema` | Indian FY format | `"2024-25"` | `"2024-26"` (end year must be start+1) |
+| Schema                 | Validates                 | Example Valid Value      | What It Catches                              |
+| :--------------------- | :------------------------ | :----------------------- | :------------------------------------------- |
+| `GstinSchema`          | GST Identification Number | `"27AAPFU0939F1ZV"`      | Wrong length, invalid state code, bad format |
+| `UpiVpaSchema`         | UPI Payment Address       | `"john.doe@okicici"`     | Missing `@`, invalid characters              |
+| `PanSchema`            | PAN Card Number           | `"ABCPD1234E"`           | Wrong entity type letter, bad length         |
+| `AadhaarSchema`        | Aadhaar number (⚠️ PII)   | `"234567890123"`         | Starts with 0/1, wrong digit count           |
+| `AmountInPaiseSchema`  | Money amount (in paise)   | `50000` (= ₹500)         | Negative values, decimals, exceeds ₹1Cr      |
+| `CurrencySchema`       | Currency code             | `"INR"`                  | Anything other than INR                      |
+| `IdempotencyKeySchema` | UUIDv4 for dedup          | `"550e8400-e29b-..."`    | Non-UUID strings                             |
+| `PaginationSchema`     | Page controls             | `{ skip: 0, count: 10 }` | Negative skip, count > 100                   |
+| `PhoneNumberSchema`    | Indian mobile number      | `"+919876543210"`        | Missing +91, wrong digit count               |
+| `IfscCodeSchema`       | Bank branch code          | `"SBIN0001234"`          | Wrong length, missing 5th-position zero      |
+| `FinancialYearSchema`  | Indian FY format          | `"2024-25"`              | `"2024-26"` (end year must be start+1)       |
 
 ### Beginner concept — What's a Zod `.describe()`?
 
-Every schema has a `.describe(...)` with a **human-readable explanation**. This text is automatically used by MCP to tell the AI agent *what format the field expects*. The AI reads this description and generates valid data. Think of it as **instructions on a form field**.
+Every schema has a `.describe(...)` with a **human-readable explanation**. This text is automatically used by MCP to tell the AI agent _what format the field expects_. The AI reads this description and generates valid data. Think of it as **instructions on a form field**.
 
 ```
 Without .describe():  AI guesses → sends "GST123" → validation fails → error
@@ -93,14 +93,14 @@ sequenceDiagram
 
 ### What each step does (beginner-friendly):
 
-| Step | What Happens | Why |
-|:-----|:-------------|:----|
-| **Trace ID** | Creates a unique ID (like a receipt number) for this call | So you can trace what happened from AI → server → Razorpay API and back |
-| **Zod validation** | Checks if the AI's input matches the expected format | Prevents garbage data from hitting real payment APIs |
-| **Business logic** | Your actual code runs (e.g., calling Razorpay) | This is the "real work" |
-| **Result wrapping** | Wraps output in `{ success: true, data: ..., traceId }` | Every response has the same predictable shape |
-| **Audit logging** | Logs tool name, duration, success/failure, trace ID | For compliance and debugging — "who did what, when" |
-| **Error handling** | Catches all errors, maps them to proper types | AI gets a structured error it can reason about, not a crash |
+| Step                | What Happens                                              | Why                                                                     |
+| :------------------ | :-------------------------------------------------------- | :---------------------------------------------------------------------- |
+| **Trace ID**        | Creates a unique ID (like a receipt number) for this call | So you can trace what happened from AI → server → Razorpay API and back |
+| **Zod validation**  | Checks if the AI's input matches the expected format      | Prevents garbage data from hitting real payment APIs                    |
+| **Business logic**  | Your actual code runs (e.g., calling Razorpay)            | This is the "real work"                                                 |
+| **Result wrapping** | Wraps output in `{ success: true, data: ..., traceId }`   | Every response has the same predictable shape                           |
+| **Audit logging**   | Logs tool name, duration, success/failure, trace ID       | For compliance and debugging — "who did what, when"                     |
+| **Error handling**  | Catches all errors, maps them to proper types             | AI gets a structured error it can reason about, not a crash             |
 
 ### Also included: `formatToolResultForMcp()`
 
@@ -114,13 +114,13 @@ Converts the `ToolResult` envelope into the exact format the MCP protocol expect
 
 ### Key features:
 
-| Feature | What It Does | Beginner Analogy |
-|:--------|:-------------|:-----------------|
-| **Basic Auth** | Sends `key_id:key_secret` as base64 in every request | Like showing your ID badge at a building entrance |
-| **Retry with backoff** | If Razorpay is temporarily down (500/502/503), waits and tries again up to 3 times | Like redialing a busy phone number, waiting longer each time |
-| **Timeout** | Cancels the request if Razorpay doesn't respond within 30 seconds | Hanging up if nobody picks up after 30 seconds |
-| **Error mapping** | Converts HTTP errors (401, 429, 500) into proper `McpError` types | Translating "server busy" into a message the AI understands |
-| **Idempotency header** | Sends `X-Payout-Idempotency` header on mutation requests | Tells Razorpay "if you've seen this before, don't do it twice" |
+| Feature                | What It Does                                                                       | Beginner Analogy                                               |
+| :--------------------- | :--------------------------------------------------------------------------------- | :------------------------------------------------------------- |
+| **Basic Auth**         | Sends `key_id:key_secret` as base64 in every request                               | Like showing your ID badge at a building entrance              |
+| **Retry with backoff** | If Razorpay is temporarily down (500/502/503), waits and tries again up to 3 times | Like redialing a busy phone number, waiting longer each time   |
+| **Timeout**            | Cancels the request if Razorpay doesn't respond within 30 seconds                  | Hanging up if nobody picks up after 30 seconds                 |
+| **Error mapping**      | Converts HTTP errors (401, 429, 500) into proper `McpError` types                  | Translating "server busy" into a message the AI understands    |
+| **Idempotency header** | Sends `X-Payout-Idempotency` header on mutation requests                           | Tells Razorpay "if you've seen this before, don't do it twice" |
 
 ### How retry backoff works:
 
@@ -172,13 +172,13 @@ Automatically creates pull requests every Monday (IST 9:00 AM) when dependencies
 
 ## Updated Progress Tracker
 
-| Sprint | Task | Status |
-|:-------|:-----|:-------|
-| **1 — Foundation** | Turborepo + shared package + server scaffolds | ✅ Done |
-| **1.5 — Schemas & Client** | Zod validators + tool wrapper + Razorpay client + CI/CD | ✅ Done |
-| **2 — Razorpay Tools** | `create_order`, `fetch_payment_status`, `trigger_refund`, `list_subscriptions` | ⏳ Next |
-| **3 — GSTN + Security** | GSTN tools + rate limiter + audit logger | ⏳ Pending |
-| **4 — Packaging** | Docker + docs + E2E tests | ⏳ Pending |
+| Sprint                     | Task                                                                           | Status     |
+| :------------------------- | :----------------------------------------------------------------------------- | :--------- |
+| **1 — Foundation**         | Turborepo + shared package + server scaffolds                                  | ✅ Done    |
+| **1.5 — Schemas & Client** | Zod validators + tool wrapper + Razorpay client + CI/CD                        | ✅ Done    |
+| **2 — Razorpay Tools**     | `create_order`, `fetch_payment_status`, `trigger_refund`, `list_subscriptions` | ⏳ Next    |
+| **3 — GSTN + Security**    | GSTN tools + rate limiter + audit logger                                       | ⏳ Pending |
+| **4 — Packaging**          | Docker + docs + E2E tests                                                      | ⏳ Pending |
 
 ---
 
@@ -191,15 +191,15 @@ All the **infrastructure** is in place. The next step is to implement the actual
 const handleCreateOrder = createToolHandler({
   name: 'create_order',
   schema: z.object({
-    amount: AmountInPaiseSchema,          // ← from schemas/common.ts
-    currency: CurrencySchema,             // ← from schemas/common.ts
+    amount: AmountInPaiseSchema, // ← from schemas/common.ts
+    currency: CurrencySchema, // ← from schemas/common.ts
     idempotency_key: IdempotencyKeySchema, // ← from schemas/common.ts
   }),
   handler: async (input, context) => {
-    const client = createRazorpayClient();  // ← from razorpay-client.ts
+    const client = createRazorpayClient(); // ← from razorpay-client.ts
     return client.post('/orders', input, input.idempotency_key);
   },
-  logger,                                  // ← from shared/logger
+  logger, // ← from shared/logger
 });
 // Tool wrapper automatically handles: validation, tracing, audit logging, error handling
 ```

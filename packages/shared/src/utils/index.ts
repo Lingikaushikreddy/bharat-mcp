@@ -34,18 +34,11 @@ const SENSITIVE_FIELDS = new Set([
   'credit_card',
 ]);
 
-export function maskSensitiveData(
-  data: unknown,
-  maxDepth: number = 10,
-): unknown {
+export function maskSensitiveData(data: unknown, maxDepth: number = 10): unknown {
   return maskRecursive(data, 0, maxDepth);
 }
 
-function maskRecursive(
-  value: unknown,
-  currentDepth: number,
-  maxDepth: number,
-): unknown {
+function maskRecursive(value: unknown, currentDepth: number, maxDepth: number): unknown {
   if (currentDepth > maxDepth) {
     return '[MAX_DEPTH_EXCEEDED]';
   }
@@ -89,9 +82,7 @@ function maskValue(value: unknown): string {
 
 export function validateIdempotencyKey(key: string): IdempotencyKey {
   if (!IDEMPOTENCY_KEY_PATTERN.test(key)) {
-    throw new Error(
-      `Invalid idempotency key: "${key}". Must be a valid UUIDv4 string.`,
-    );
+    throw new Error(`Invalid idempotency key: "${key}". Must be a valid UUIDv4 string.`);
   }
   return key as IdempotencyKey;
 }

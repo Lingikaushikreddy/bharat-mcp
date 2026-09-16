@@ -10,7 +10,7 @@
  * - Timing / duration measurement for observability
  */
 
-import { z } from 'zod';
+import type { z } from 'zod';
 import type { Logger } from 'pino';
 import type { ToolExecutionContext, ToolResult, ToolSuccess, ToolError } from '../types/index.js';
 import { ValidationError, isMcpError, ErrorCode } from '../errors/index.js';
@@ -88,8 +88,7 @@ function classifyError(error: unknown, context: ToolExecutionContext): ToolError
     );
   }
 
-  const message =
-    error instanceof Error ? error.message : 'An unexpected internal error occurred';
+  const message = error instanceof Error ? error.message : 'An unexpected internal error occurred';
 
   return buildError(ErrorCode.INTERNAL_ERROR, message, context, 500);
 }
@@ -197,9 +196,10 @@ export function createToolHandler<TInput, TOutput>(
  * });
  * ```
  */
-export function formatToolResultForMcp<T>(
-  result: ToolResult<T>,
-): { content: Array<{ type: 'text'; text: string }>; isError: boolean } {
+export function formatToolResultForMcp<T>(result: ToolResult<T>): {
+  content: Array<{ type: 'text'; text: string }>;
+  isError: boolean;
+} {
   return {
     content: [
       {

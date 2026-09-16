@@ -48,7 +48,7 @@ export type Gstin = z.infer<typeof GstinSchema>;
 // UPI VPA — Unified Payments Interface Virtual Payment Address
 // ---------------------------------------------------------------------------
 
-export const UPI_VPA_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9.\-]{2,}@[a-zA-Z][a-zA-Z0-9]{2,}$/;
+export const UPI_VPA_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9.-]{2,}@[a-zA-Z][a-zA-Z0-9]{2,}$/;
 
 export const UpiVpaSchema = z
   .string()
@@ -271,7 +271,10 @@ export const FINANCIAL_YEAR_REGEX = /^[0-9]{4}-[0-9]{2}$/;
 
 export const FinancialYearSchema = z
   .string()
-  .regex(FINANCIAL_YEAR_REGEX, 'Invalid financial year format. Expected "YYYY-YY" (e.g., "2024-25")')
+  .regex(
+    FINANCIAL_YEAR_REGEX,
+    'Invalid financial year format. Expected "YYYY-YY" (e.g., "2024-25")',
+  )
   .refine(
     (fy) => {
       const [startStr, endStr] = fy.split('-');
